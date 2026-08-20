@@ -16,7 +16,7 @@ Steps:
 import os
 import cv2
 import shutil
-from langchain.agents import Tool, tool
+from langchain.agents import Tool
 from ultralytics import YOLO
 
 UPLOAD_FOLDER = "uploads"
@@ -133,8 +133,7 @@ def detect_with_yolo(
 
     return f"Processing complete. Outputs saved in '{output_dir}' and '{output_txt}'."
 
-@tool("video_detection_tool", return_direct=True)
-def video_detection_tool(video) -> str:
+def _video_detection_tool(video) -> str:
     """
     Handles video uploads dynamically and runs YOLO detection.
     Expects that the input 'video' has a 'name' attribute containing the video file path.
@@ -146,6 +145,8 @@ def video_detection_tool(video) -> str:
     if os.path.abspath(video.name) != os.path.abspath(video_path):
         shutil.copy(video.name, video_path)
     return detect_with_yolo(video_path)
+
+video_detection_tool = Tool(name="video_detection_tool", func=_video_detection_tool, return_direct=True)
 
 if __name__ == "__main__":
     print("LangChain YOLO Agent Ready!")

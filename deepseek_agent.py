@@ -1,10 +1,9 @@
 import os
 import re
-from langchain.tools import tool
+from langchain.tools import Tool
 from langchain_ollama import ChatOllama
 
-@tool("analysis_tool", return_direct=True)
-def analysis_tool(detections_file: str) -> str:
+def _analysis_tool(detections_file: str) -> str:
     """
     Reads the YOLO detection log (detections_file) and uses the DeepSeek model via ChatOllama
     to produce an email-style summary in plain text with:
@@ -124,3 +123,5 @@ Please produce exactly 3 bullet lines:
         out_f.write(final_output)
 
     return f"Analysis complete. Summary saved to '{analysis_path}'."
+
+analysis_tool = Tool(name="analysis_tool", func=_analysis_tool, return_direct=True)

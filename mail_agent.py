@@ -1,5 +1,5 @@
-
 from langchain.tools import tool
+from langchain.tools import Tool
 import os
 import smtplib
 from email.mime.text import MIMEText
@@ -7,8 +7,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email import encoders
 
-@tool("mail_tool", return_direct=True)
-def mail_tool(input_data: dict) -> str:
+def _mail_tool(input_data: dict) -> str:
     """
     Expects a single dict param named 'input_data'. Example:
       mail_tool({"input_data": {
@@ -62,3 +61,5 @@ def mail_tool(input_data: dict) -> str:
         return f"Failed to send email: {str(e)}"
 
     return f"Email sent successfully to {msg['To']}."
+
+mail_tool = Tool(name="mail_tool", func=_mail_tool, return_direct=True)
